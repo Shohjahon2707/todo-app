@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Список задач</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        a.add-task {
+            display: block;
+            max-width: 200px;
+            margin: 0 auto 40px auto;
+            padding: 15px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.4);
+            transition: background-color 0.3s ease;
+        }
+
+        a.add-task:hover {
+            background-color: #2980b9;
+        }
+
+        ul.task-list {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0;
+            list-style: none;
+        }
+
+        ul.task-list li {
+            background: white;
+            margin-bottom: 15px;
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3rem;
+        }
+
+        ul.task-list li.completed {
+            color: #95a5a6;
+            text-decoration: line-through;
+            background: #ecf0f1;
+        }
+
+        .task-info {
+            flex-grow: 1;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .task-meta {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 6px;
+        }
+
+        /* Удалил стили для времени дедлайна */
+
+        .task-actions {
+            display: flex;
+            gap: 20px; /* промежуток между кнопками */
+        }
+
+        .task-actions a {
+            text-decoration: none;
+            font-weight: 700;
+            color: #34495e;
+            border: 2px solid transparent;
+            padding: 8px 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .task-actions a:hover {
+            border-color: #3498db;
+            color: #2980b9;
+        }
+
+        .task-actions a.delete {
+            color: #e74c3c;
+            border-color: transparent;
+        }
+
+        .task-actions a.delete:hover {
+            border-color: #e74c3c;
+            background: #fdecea;
+        }
+
+        @media (max-width: 600px) {
+            ul.task-list li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .task-actions {
+                margin-top: 15px;
+                width: 100%;
+                justify-content: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Список задач</h1>
+    <a href="{% url 'task_create' %}" class="add-task">+ Добавить задачу</a>
+
+    <ul class="task-list">
+        {% for task in tasks %}
+            <li class="{% if task.completed %}completed{% endif %}">
+                <div class="task-info">
+                    <div class="task-title">{{ task.title }}</div>
+                    <div class="task-meta">
+                        Добавлено: {{ task.created_at|date:"d.m.Y H:i" }}
+                        {% if task.deadline %}
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                            Дедлайн: {{ task.deadline|date:"d.m.Y H:i" }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="task-actions">
+                    <a href="{% url 'task_update' task.pk %}">Редактировать</a>
+                    <a href="{% url 'task_delete' task.pk %}" class="delete">Удалить</a>
+                </div>
+            </li>
+        {% empty %}
+            <li>Задач пока нет.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
